@@ -1,0 +1,18 @@
+{
+  "name": "playwright-signup-tests",
+  "version": "1.0.0",
+  "description": "Playwright E2E automation for the Signup Feature (SCRUM-6)",
+  "scripts": {
+    "test": "playwright test",
+    "test:positive": "playwright test signup.positive",
+    "test:negative": "playwright test signup.negative",
+    "test:edge": "playwright test signup.edge",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report",
+    "test:ci": "CI=true playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "uuid": "^9.0.1"
+  }
+}
