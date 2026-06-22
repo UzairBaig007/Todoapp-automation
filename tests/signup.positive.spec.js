@@ -37,7 +37,7 @@ test.describe('✅ Positive — Signup Feature', () => {
   // TC-03: Valid email with plus-addressing
   test('TC-03 | Should accept valid email with plus-addressing', async ({ page }) => {
     const signupPage = new SignupPage(page);
-    const email      = `user+${Date.now()}`;
+    const email      = `user+${Date.now()}@example.com`;
 
     await signupPage.goto();
     await signupPage.signUp(email, 'Secure@123');
