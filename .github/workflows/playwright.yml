@@ -1,11 +1,8 @@
 name: Playwright E2E Tests
 
 on:
-  # Triggered automatically by dev repo signal
   repository_dispatch:
     types: [run-tests]
-
-  # Can also trigger manually from GitHub UI
   workflow_dispatch:
     inputs:
       app_url:
@@ -19,33 +16,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      # Step 1: Download your test code
       - name: Checkout test repository
         uses: actions/checkout@v4
 
-      # Step 2: Install Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      # Step 3: Install packages
       - name: Install dependencies
         run: npm ci
 
-      # Step 4: Install Chromium browser
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      # Step 5: Run all 23 test cases
       - name: Run Playwright tests
         run: npx playwright test --project=chromium
         env:
           BASE_URL: ${{ github.event.client_payload.app_url || secrets.BASE_URL }}
 
-      # Step 6: Save HTML report (always — even if tests fail)
       - name: Upload HTML Report
         uses: actions/upload-artifact@v4
         if: always()
@@ -54,7 +44,6 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-      # Step 7: Show summary on GitHub Actions page
       - name: Post results summary
         if: always()
         run: |
@@ -64,3 +53,24 @@ jobs:
           echo "| 🌐 App URL | ${{ github.event.client_payload.app_url || secrets.BASE_URL }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 👤 Triggered by | ${{ github.event.client_payload.triggered_by }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 📝 Commit | ${{ github.event.client_payload.commit }} |" >> $GITHUB_STEP_SUMMARY
+
+      # ⭐ NEW — Reports E2E results back to dev repo PR
+      - name: Report results back to dev repo PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.TEST_REPO_TOKEN }}
+          script: |
+            const owner = 'UzairBaig007';
+            const repo = 'todoapplication';
+            const sha = '${{ github.event.client_payload.commit }}';
+            const success = '${{ job.status }}' === 'success';
+
+            await github.rest.repos.createCommitStatus({
+              owner,
+              repo,
+              sha,
+              state: success ? 'success' : 'failure',
+              description: success ? 'All E2E tests passed!' : 'E2E tests failed!',
+              context: 'Playwright E2E Tests'
+            });
