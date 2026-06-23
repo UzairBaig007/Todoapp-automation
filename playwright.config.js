@@ -19,7 +19,7 @@ module.exports = defineConfig({
 
   use: {
     // ⚠️  Replace with your app's base URL
-    baseURL: process.env.BASE_URL || 'http://localhost:3001',
+    baseURL: process.env.BASE_URL || 'https://todoapplication-one-theta.vercel.app/',
 
     // Collect traces on first retry (great for debugging CI failures)
     trace: 'on-first-retry',
