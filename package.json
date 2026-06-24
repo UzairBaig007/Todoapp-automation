@@ -7,6 +7,9 @@
     "test:positive": "playwright test signup.positive",
     "test:negative": "playwright test signup.negative",
     "test:edge": "playwright test signup.edge",
+    "test:priority": "playwright test priority",
+    "test:priority:positive": "playwright test priority.positive",
+    "test:priority:negative": "playwright test priority.negative",
     "test:headed": "playwright test --headed",
     "test:report": "playwright show-report",
     "test:ci": "CI=true playwright test"
